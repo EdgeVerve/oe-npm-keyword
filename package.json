@@ -1,14 +1,23 @@
 {
   "name": "oe-npm-keyword",
-  "version": "4.2.0",
+  "version": "0.8.0",
   "description": "Get a list of npm packages with a certain keyword",
   "license": "MIT",
-  "repository": "pragyandas/npm-keyword",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:EdgeVerve/oe-npm-keyword.git"
+  },
   "author": {
     "name": "Sindre Sorhus",
     "email": "sindresorhus@gmail.com",
     "url": "sindresorhus.com"
   },
+  "contributors": [
+    {
+      "name": "Pragyan Das",
+      "email": "pragyandas@msn.com"
+    }
+  ],
   "engines": {
     "node": ">=0.10.0"
   },
