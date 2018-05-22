@@ -1,8 +1,8 @@
 /**
- * 
+ *
  * ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
  * Bangalore, India. All Rights Reserved.
- * 
+ *
  */
 'use strict';
 var fetch = require('node-fetch');
@@ -11,59 +11,55 @@ var registryUrl = require('registry-url');
 var Promise = require('pinkie-promise');
 var config = require('rc')('npm');
 
-function get(keyword, level) {
-	if (typeof keyword !== 'string') {
-		return Promise.reject(new TypeError('Keyword must be a string'));
+function get(keyword, options) {
+	if (typeof keyword !== 'string' && !Array.isArray(keyword)) {
+		return Promise.reject(new TypeError('Keyword must be either a string or an array of strings'));
 	}
 
-	keyword = encodeURIComponent(keyword);
+	if (options.size < 1 || options.size > 250) {
+		return Promise.reject(new TypeError('Size option must be between 1 and 250'));
+	}
 
-	var url = registryUrl() +
-		'-/_view/byKeyword?' +
-		'startkey=[%22' + keyword + '%22]' +
-		'&endkey=[%22' + keyword + '%22,%7B%7D]' +
-		'&group_level=' + level;
+	keyword = encodeURIComponent(keyword).replace('%2C', '+');
 
-	var options = {};
+	const url = `${registryUrl()}-/v1/search?text=keywords:${keyword}&size=${options.size}`;
+
+	var fetchOptions = {};
 
 	var proxy = process.env.https_proxy || config['https-proxy'] || config.proxy;
 
 	if(proxy){
 		var agent = new Agent(proxy);
-		options.agent = agent;
+		fetchOptions.agent = agent;
 	}
 
-	return fetch(url, options).then(function (res) {
+	return fetch(url, fetchOptions).then(function (res) {
 		if (!res.ok) {
 			throw Error(res.statusText);
 		}
 		return res.json();
 	}).then(function(json){
-		return json.rows;
-	})
+		return json;
+	});
 }
 
-module.exports = function (keyword) {
-	return get(keyword, 3).then(function (data) {
-		return data.map(function (el) {
-			return {
-				name: el.key[1],
-				description: el.key[2]
-			};
-		});
+module.exports = (keyword, options) => {
+	options = Object.assign({size: 250}, options);
+
+	return get(keyword, options).then(data => {
+		return data.objects.map(el => ({
+			name: el.package.name,
+			description: el.package.description
+		}));
 	});
 };
 
-module.exports.names = function (keyword) {
-	return get(keyword, 2).then(function (data) {
-		return data.map(function (el) {
-			return el.key[1];
-		});
-	});
+module.exports.names = (keyword, options) => {
+	options = Object.assign({size: 250}, options);
+
+	return get(keyword, options).then(data => data.objects.map(x => x.package.name));
 };
 
-module.exports.count = function (keyword) {
-	return get(keyword, 1).then(function (data) {
-		return data[0] ? data[0].value : 0;
-	});
+module.exports.count = keyword => {
+	return get(keyword, {size: 1}).then(data => data.total);
 };
