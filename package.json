@@ -1,6 +1,6 @@
 {
   "name": "oe-npm-keyword",
-  "version": "0.8.1",
+  "version": "1.5.0",
   "description": "Get a list of npm packages with a certain keyword",
   "license": "MIT",
   "repository": {
