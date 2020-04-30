@@ -1,6 +1,6 @@
 {
   "name": "oe-npm-keyword",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Get a list of npm packages with a certain keyword",
   "license": "MIT",
   "repository": {
@@ -38,15 +38,15 @@
     "search"
   ],
   "dependencies": {
-    "https-proxy-agent": "^1.0.0",
-    "node-fetch": "^1.6.3",
-    "object-assign": "^4.0.1",
-    "pinkie-promise": "^2.0.0",
-    "rc": "^1.2.1",
-    "registry-url": "^3.0.3"
+    "https-proxy-agent": "2.2.4",
+    "node-fetch": "1.7.3",
+    "object-assign": "4.1.1",
+    "pinkie-promise": "2.0.1",
+    "rc": "1.2.8",
+    "registry-url": "3.1.0"
   },
   "devDependencies": {
-    "ava": "*",
-    "xo": "*"
+    "ava": "3.0.0",
+    "xo": "0.25.3"
   }
 }
